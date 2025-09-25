@@ -2,20 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentTheme = localStorage.getItem('theme') || 'dark-theme';
     document.body.className = currentTheme;
 
-    const themeToggle = document.getElementById('theme-toggle');
-    themeToggle.addEventListener('click', () => {
-        const newTheme = document.body.classList.contains('light-theme') ? 'dark-theme' : 'light-theme';
-        document.body.className = newTheme;
-        localStorage.setItem('theme', newTheme);
-    });
-
-    const views = {
-        year: document.getElementById('year-selection'),
-        semester: document.getElementById('semester-selection'),
-        subject: document.getElementById('subject-list')
-    };
-    
-    const semesterButtonsContainer = document.getElementById('semester-buttons');
     const subjectsUl = document.getElementById('subjects');
     const modal = document.getElementById('syllabus-modal');
     const closeButton = document.querySelector('.close-button');
@@ -29,17 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
             semesters: [1, 2],
             subjects: {
                 '1': [
-                    { code: 'IP3151', name: 'Induction Programme', type: 'Induction' }, { code: 'HS3152', name: 'Professional English - 1', type: 'Theory' }, { code: 'MA3151', name: 'Matrices and Calculus', type: 'Theory' }, { code: 'PH3151', name: 'Engineering Physics', type: 'Theory' }, { code: 'CY3151', name: 'Engineering Chemistry', type: 'Theory' }, { code: 'GE3151', name: 'Problem Solving and Python Programming', type: 'Theory' }, { code: 'GE3152', name: 'Heritage of Tamils', type: 'Theory' }, { code: 'GE3171', name: 'Problem Solving and Python Programming Laboratory', type: 'Laboratory' }, { code: 'BS3171', name: 'Physics and Chemistry Laboratory', type: 'Laboratory' }, { code: 'GE3172', name: 'English Laboratory', type: 'Laboratory' }
-                ],
-                '2': [
-                    { code: 'HS3252', name: 'Professional English - II', type: 'Theory' }, { code: 'MA3251', name: 'Statistics and Numerical Methods', type: 'Theory' }, { code: 'BM3251', name: 'Biosciences for Medical Engineering', type: 'Theory' }, { code: 'BE3251', name: 'Basic Electrical and Electronics Engineering', type: 'Theory' }, { code: 'BM3252', name: 'Medical Physics', type: 'Theory' }, { code: 'GE3251', name: 'Engineering Graphics', type: 'Theory' }, { code: 'GE3252', name: 'Tamils and Technology', type: 'Theory' }, { code: 'GE3271', name: 'Engineering Practices Laboratory', type: 'Laboratory' }, { code: 'BM3271', name: 'Biosciences Laboratory', type: 'Laboratory' }, { code: 'GE3272', name: 'Communication Laboratory / Foreign Language', type: 'Laboratory' }
-                ]
-            }
-        },
-        '2': { 
-            semesters: [3, 4],
-            subjects: {
-                '3': [
                     { code: 'MA3351', name: 'Transforms and Partial Differential Equations', type: 'Theory' }, { code: 'BM3353', name: 'Fundamentals of Electronic Devices and Circuits', type: 'Theory' }, { code: 'BM3301', name: 'Sensors and Measurements', type: 'Theory' }, { code: 'BM3352', name: 'Electric Circuit Analysis', type: 'Theory' }, { code: 'BM3351', name: 'Anatomy and Human Physiology', type: 'Theory' }, { code: 'CS3391', name: 'Object oriented programming', type: 'Theory' }, { code: 'BM3361', name: 'Fundamentals of Electronic Devices and Circuits Laboratory', type: 'Laboratory' }, { code: 'BM3311', name: 'Sensors and Measurements Laboratory', type: 'Laboratory' }, { code: 'CS3381', name: 'Object oriented programming Laboratory', type: 'Laboratory' }, { code: 'GE3361', name: 'Professional Developments', type: 'Laboratory' }
                 ],
                 '4': [
