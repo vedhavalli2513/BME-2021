@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.E. Biomedical Engineering Syllabus</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>B.E. Biomedical Engineering Syllabus</h1>
+            <button id="theme-toggle">Toggle Theme</button>
+        </div>
+        <div id="year-selection" class="selection-box">
+            <h2>Select Year</h2>
+            <button class="year-btn" data-year="1">1st Year</button>
+            <button class="year-btn" data-year="2">2nd Year</button>
+            <button class="year-btn" data-year="3">3rd Year</button>
+            <button class="year-btn" data-year="4">4th Year</button>
+        </div>
+        <div id="semester-selection" class="selection-box" style="display: none;">
+            <h2>Select Semester</h2>
+            <div id="semester-buttons"></div>
+        </div>
+        <div id="subject-list" class="selection-box" style="display: none;">
+            <h2>Subjects and Laboratories</h2>
+            <ul id="subjects"></ul>
+        </div>
+    </div>
+
+    <div id="syllabus-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="syllabus-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
