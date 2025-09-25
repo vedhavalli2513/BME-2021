@@ -1,116 +1,75 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Check for saved theme preference
-    const currentTheme = localStorage.getItem('theme') || 'light-theme';
-    document.body.classList.add(currentTheme);
+    const currentTheme = localStorage.getItem('theme') || 'dark-theme';
+    document.body.className = currentTheme;
 
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.addEventListener('click', () => {
-        if (document.body.classList.contains('light-theme')) {
-            document.body.classList.replace('light-theme', 'dark-theme');
-            localStorage.setItem('theme', 'dark-theme');
-        } else {
-            document.body.classList.replace('dark-theme', 'light-theme');
-            localStorage.setItem('theme', 'light-theme');
-        }
+        const newTheme = document.body.classList.contains('light-theme') ? 'dark-theme' : 'light-theme';
+        document.body.className = newTheme;
+        localStorage.setItem('theme', newTheme);
     });
 
-    const yearButtons = document.querySelectorAll('.year-btn');
-    const semesterSelection = document.getElementById('semester-selection');
+    const views = {
+        year: document.getElementById('year-selection'),
+        semester: document.getElementById('semester-selection'),
+        subject: document.getElementById('subject-list')
+    };
+    
     const semesterButtonsContainer = document.getElementById('semester-buttons');
-    const subjectList = document.getElementById('subject-list');
     const subjectsUl = document.getElementById('subjects');
     const modal = document.getElementById('syllabus-modal');
     const closeButton = document.querySelector('.close-button');
     const syllabusContent = document.getElementById('syllabus-content');
 
-    const syllabusData = {
-        '1': { // 1st Year
-            '1': [ // 1st Semester
-                { code: 'IP3151', name: 'Induction Programme', type: 'Induction' },
-                { code: 'HS3152', name: 'Professional English - 1', type: 'Theory' },
-                { code: 'MA3151', name: 'Matrices and Calculus', type: 'Theory' },
-                { code: 'PH3151', name: 'Engineering Physics', type: 'Theory' },
-                { code: 'CY3151', name: 'Engineering Chemistry', type: 'Theory' },
-                { code: 'GE3151', name: 'Problem Solving and Python Programming', type: 'Theory' },
-                { code: 'GE3152', name: 'Heritage of Tamils', type: 'Theory' },
-                { code: 'GE3171', name: 'Problem Solving and Python Programming Laboratory', type: 'Laboratory' },
-                { code: 'BS3171', name: 'Physics and Chemistry Laboratory', type: 'Laboratory' },
-                { code: 'GE3172', name: 'English Laboratory', type: 'Laboratory' }
-            ],
-            '2': [ // 2nd Semester
-                { code: 'HS3252', name: 'Professional English - II', type: 'Theory' },
-                { code: 'MA3251', name: 'Statistics and Numerical Methods', type: 'Theory' },
-                { code: 'BM3251', name: 'Biosciences for Medical Engineering', type: 'Theory' },
-                { code: 'BE3251', name: 'Basic Electrical and Electronics Engineering', type: 'Theory' },
-                { code: 'BM3252', name: 'Medical Physics', type: 'Theory' },
-                { code: 'GE3251', name: 'Engineering Graphics', type: 'Theory' },
-                { code: 'GE3252', name: 'Tamils and Technology', type: 'Theory' },
-                { code: 'GE3271', name: 'Engineering Practices Laboratory', type: 'Laboratory' },
-                { code: 'BM3271', name: 'Biosciences Laboratory', type: 'Laboratory' },
-                { code: 'GE3272', name: 'Communication Laboratory / Foreign Language', type: 'Laboratory' }
-            ]
-        },
-        '2': { // 2nd Year
-            '3': [ // 3rd Semester
-                { code: 'MA3351', name: 'Transforms and Partial Differential Equations', type: 'Theory' },
-                { code: 'BM3353', name: 'Fundamentals of Electronic Devices and Circuits', type: 'Theory' },
-                { code: 'BM3301', name: 'Sensors and Measurements', type: 'Theory' },
-                { code: 'BM3352', name: 'Electric Circuit Analysis', type: 'Theory' },
-                { code: 'BM3351', name: 'Anatomy and Human Physiology', type: 'Theory' },
-                { code: 'CS3391', name: 'Object oriented programming', type: 'Theory' },
-                { code: 'BM3361', name: 'Fundamentals of Electronic Devices and Circuits Laboratory', type: 'Laboratory' },
-                { code: 'BM3311', name: 'Sensors and Measurements Laboratory', type: 'Laboratory' },
-                { code: 'CS3381', name: 'Object oriented programming Laboratory', type: 'Laboratory' },
-                { code: 'GE3361', name: 'Professional Developments', type: 'Laboratory' }
-            ],
-            '4': [ // 4th Semester
-                { code: 'MA3355', name: 'Random Processes and Linear Algebra', type: 'Theory' },
-                { code: 'BM3491', name: 'Biomedical Instrumentation', type: 'Theory' },
-                { code: 'BM3402', name: 'Analog and Digital Integrated Circuits', type: 'Theory' },
-                { code: 'BM3451', name: 'Bio Control Systems', type: 'Theory' },
-                { code: 'BM3401', name: 'Signal Processing', type: 'Theory' },
-                { code: 'GE3451', name: 'Environmental Sciences and Sustainability', type: 'Theory' },
-                { code: 'BM3411', name: 'Biomedical Instrumentation Laboratory', type: 'Laboratory' },
-                { code: 'BM3412', name: 'Analog and Digital Integrated Circuits Laboratory', type: 'Laboratory' }
-            ]
-        },
-        '3': { // 3rd Year
-            '5': [ // 5th Semester
-                { code: 'BM3551', name: 'Embedded Systems and IoMT', type: 'Theory' },
-                { code: 'BM3591', name: 'Diagnostic and Therapeutic Equipment', type: 'Theory' },
-                { code: 'PEC1', name: 'Professional Elective I', type: 'Elective' },
-                { code: 'PEC2', name: 'Professional Elective II', type: 'Elective' },
-                { code: 'PEC3', name: 'Professional Elective III', type: 'Elective' },
-                { code: 'BM3562', name: 'Embedded systems and IOMT Laboratory', type: 'Laboratory' },
-                { code: 'BM3561', name: 'Diagnostic and Therapeutic Equipment Laboratory', type: 'Laboratory' }
+    let currentYear = null;
 
-            ],
-            '6': [ // 6th Semester
-                 { code: 'CS3491', name: 'Artificial Intelligence and Machine Learning', type: 'Theory' },
-                 { code: 'BM3651', name: 'Fundamentals of Healthcare Analytics', type: 'Theory' },
-                 { code: 'BM3652', name: 'Medical Image Processing', type: 'Theory' },
-                 { code: 'OEC1', name: 'Open Elective - I', type: 'Elective' },
-                 { code: 'PEC4', name: 'Professional Elective IV', type: 'Elective' },
-                 { code: 'PEC5', name: 'Professional Elective V', type: 'Elective' },
-                 { code: 'PEC6', name: 'Professional Elective VI', type: 'Elective' }
-            ]
+    // --- Data ---
+    const syllabusData = {
+        '1': { 
+            semesters: [1, 2],
+            subjects: {
+                '1': [
+                    { code: 'IP3151', name: 'Induction Programme', type: 'Induction' }, { code: 'HS3152', name: 'Professional English - 1', type: 'Theory' }, { code: 'MA3151', name: 'Matrices and Calculus', type: 'Theory' }, { code: 'PH3151', name: 'Engineering Physics', type: 'Theory' }, { code: 'CY3151', name: 'Engineering Chemistry', type: 'Theory' }, { code: 'GE3151', name: 'Problem Solving and Python Programming', type: 'Theory' }, { code: 'GE3152', name: 'Heritage of Tamils', type: 'Theory' }, { code: 'GE3171', name: 'Problem Solving and Python Programming Laboratory', type: 'Laboratory' }, { code: 'BS3171', name: 'Physics and Chemistry Laboratory', type: 'Laboratory' }, { code: 'GE3172', name: 'English Laboratory', type: 'Laboratory' }
+                ],
+                '2': [
+                    { code: 'HS3252', name: 'Professional English - II', type: 'Theory' }, { code: 'MA3251', name: 'Statistics and Numerical Methods', type: 'Theory' }, { code: 'BM3251', name: 'Biosciences for Medical Engineering', type: 'Theory' }, { code: 'BE3251', name: 'Basic Electrical and Electronics Engineering', type: 'Theory' }, { code: 'BM3252', name: 'Medical Physics', type: 'Theory' }, { code: 'GE3251', name: 'Engineering Graphics', type: 'Theory' }, { code: 'GE3252', name: 'Tamils and Technology', type: 'Theory' }, { code: 'GE3271', name: 'Engineering Practices Laboratory', type: 'Laboratory' }, { code: 'BM3271', name: 'Biosciences Laboratory', type: 'Laboratory' }, { code: 'GE3272', name: 'Communication Laboratory / Foreign Language', type: 'Laboratory' }
+                ]
+            }
         },
-        '4': { // 4th Year
-            '7': [ // 7th Semester
-                 { code: 'GE3791', name: 'Human Values and Ethics', type: 'Theory' },
-                 { code: 'MGT', name: 'Management - Elective', type: 'Elective' },
-                 { code: 'OEC2', name: 'Open Elective - II', type: 'Elective' },
-                 { code: 'OEC3', name: 'Open Elective - III', type: 'Elective' },
-                 { code: 'OEC4', name: 'Open Elective - IV', type: 'Elective' },
-                 { code: 'BM3711', name: 'Hospital Training', type: 'EEC' }
-            ],
-            '8': [ // 8th Semester
-                 { code: 'BM3811', name: 'Project Work / Internship', type: 'EEC' }
-            ]
+        '2': { 
+            semesters: [3, 4],
+            subjects: {
+                '3': [
+                    { code: 'MA3351', name: 'Transforms and Partial Differential Equations', type: 'Theory' }, { code: 'BM3353', name: 'Fundamentals of Electronic Devices and Circuits', type: 'Theory' }, { code: 'BM3301', name: 'Sensors and Measurements', type: 'Theory' }, { code: 'BM3352', name: 'Electric Circuit Analysis', type: 'Theory' }, { code: 'BM3351', name: 'Anatomy and Human Physiology', type: 'Theory' }, { code: 'CS3391', name: 'Object oriented programming', type: 'Theory' }, { code: 'BM3361', name: 'Fundamentals of Electronic Devices and Circuits Laboratory', type: 'Laboratory' }, { code: 'BM3311', name: 'Sensors and Measurements Laboratory', type: 'Laboratory' }, { code: 'CS3381', name: 'Object oriented programming Laboratory', type: 'Laboratory' }, { code: 'GE3361', name: 'Professional Developments', type: 'Laboratory' }
+                ],
+                '4': [
+                    { code: 'MA3355', name: 'Random Processes and Linear Algebra', type: 'Theory' }, { code: 'BM3491', name: 'Biomedical Instrumentation', type: 'Theory' }, { code: 'BM3402', name: 'Analog and Digital Integrated Circuits', type: 'Theory' }, { code: 'BM3451', name: 'Bio Control Systems', type: 'Theory' }, { code: 'BM3401', name: 'Signal Processing', type: 'Theory' }, { code: 'GE3451', name: 'Environmental Sciences and Sustainability', type: 'Theory' }, { code: 'BM3411', name: 'Biomedical Instrumentation Laboratory', type: 'Laboratory' }, { code: 'BM3412', name: 'Analog and Digital Integrated Circuits Laboratory', type: 'Laboratory' }
+                ]
+            }
+        },
+        '3': { 
+            semesters: [5, 6],
+            subjects: {
+                '5': [
+                    { code: 'BM3551', name: 'Embedded Systems and IoMT', type: 'Theory' }, { code: 'BM3591', name: 'Diagnostic and Therapeutic Equipment', type: 'Theory' }, { code: 'PEC1', name: 'Professional Elective I', type: 'Elective' }, { code: 'PEC2', name: 'Professional Elective II', type: 'Elective' }, { code: 'PEC3', name: 'Professional Elective III', type: 'Elective' }, { code: 'BM3562', name: 'Embedded systems and IOMT Laboratory', type: 'Laboratory' }, { code: 'BM3561', name: 'Diagnostic and Therapeutic Equipment Laboratory', type: 'Laboratory' }
+                ],
+                '6': [
+                    { code: 'CS3491', name: 'Artificial Intelligence and Machine Learning', type: 'Theory' }, { code: 'BM3651', name: 'Fundamentals of Healthcare Analytics', type: 'Theory' }, { code: 'BM3652', name: 'Medical Image Processing', type: 'Theory' }, { code: 'OEC1', name: 'Open Elective - I', type: 'Elective' }, { code: 'PEC4', name: 'Professional Elective IV', type: 'Elective' }, { code: 'PEC5', name: 'Professional Elective V', type: 'Elective' }, { code: 'PEC6', name: 'Professional Elective VI', type: 'Elective' }
+                ]
+            }
+        },
+        '4': { 
+            semesters: [7, 8],
+            subjects: {
+                '7': [
+                    { code: 'GE3791', name: 'Human Values and Ethics', type: 'Theory' }, { code: 'MGT', name: 'Management - Elective', type: 'Elective' }, { code: 'OEC2', name: 'Open Elective - II', type: 'Elective' }, { code: 'OEC3', name: 'Open Elective - III', type: 'Elective' }, { code: 'OEC4', name: 'Open Elective - IV', type: 'Elective' }, { code: 'BM3711', name: 'Hospital Training', type: 'EEC' }
+                ],
+                '8': [
+                    { code: 'BM3811', name: 'Project Work / Internship', type: 'EEC' }
+                ]
+            }
         }
     };
-    
-    // Fully populated syllabus details
     const syllabusDetails = {
         'IP3151': `This is a mandatory 2-week programme to be conducted as soon as the students enter the institution. The purpose of this programme is to make the students feel comfortable in their new environment, open them up, set a healthy daily routine, create bonding, and develop awareness of themselves and society.`,
         'HS3152': `<strong>COURSE OBJECTIVES:</strong><br>To improve communicative competence, learn basic grammatic structures, acquire lexical competence, use language effectively in professional contexts, and develop the ability to read and write complex texts.`,
@@ -155,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'PEC1': `Professional Elective courses are chosen from a list of specialized subjects to deepen knowledge in a specific area of biomedical engineering. Please refer to the PDF for the list of available electives.`,
         'PEC2': `Professional Elective courses are chosen from a list of specialized subjects to deepen knowledge in a specific area of biomedical engineering. Please refer to the PDF for the list of available electives.`,
         'PEC3': `Professional Elective courses are chosen from a list of specialized subjects to deepen knowledge in a specific area of biomedical engineering. Please refer to the PDF for the list of available electives.`,
-        'BM3562': `<strong>COURSE OBJECTIVES:</strong><br>To acquire knowledge and understand the hardware architecture and programming aspects of embedded system design, understand IoT architecture and build simple IoT Systems, and understand IoMT infrastructure for healthcare applications.`,
+        'BM3562': `<strong>COURSE OBJECTIVES:</strong><br>To acquire knowledge and understand the hardware architecture and programming aspects of embedded system design, understand IoT architecture and build simple IoT Systems, and understand IoMT infrastructure for healthcare with simple applications.`,
         'BM3561': `<strong>COURSE OBJECTIVES:</strong><br>To demonstrate recording and analysis of different Bio potentials and to examine different therapeutic modalities.`,
         'CS3491': `<strong>COURSE OBJECTIVES:</strong><br>To study uninformed and Heuristic search techniques, learn techniques for reasoning under uncertainty, introduce Machine Learning and supervised learning algorithms, study ensembling and unsupervised learning, and learn basics of deep learning.`,
         'BM3651': `<strong>COURSE OBJECTIVES:</strong><br>To understand statistical methods for biomedical research design, comprehend mathematical and statistical theory in Healthcare, apply regression and correlation analysis, understand Meta analysis and variance analysis, and interpret investigational methods results.`,
@@ -173,35 +132,54 @@ document.addEventListener('DOMContentLoaded', () => {
         'BM3811': `<strong>COURSE OBJECTIVES:</strong><br>To develop the ability to solve a specific problem from identification and literature review to successful solution. To train students in preparing project reports and to face reviews and viva voce examination.`
     };
 
-    yearButtons.forEach(button => {
+
+    // --- View Management ---
+    function showView(viewId) {
+        Object.values(views).forEach(view => {
+            view.style.display = 'none';
+            view.classList.remove('active');
+        });
+        const activeView = views[viewId];
+        if (activeView) {
+            activeView.style.display = 'block';
+            activeView.classList.add('active');
+        }
+    }
+
+    // --- Event Listeners ---
+    document.querySelectorAll('.year-btn').forEach(button => {
         button.addEventListener('click', () => {
-            const year = button.dataset.year;
-            populateSemesterButtons(year);
-            semesterSelection.style.display = 'block';
-            subjectList.style.display = 'none'; // Hide subject list when a new year is chosen
+            currentYear = button.dataset.year;
+            populateSemesterButtons(currentYear);
+            showView('semester');
+        });
+    });
+    
+    document.querySelectorAll('.back-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const targetView = button.dataset.target;
+            if (targetView === 'semester-selection') {
+                populateSemesterButtons(currentYear);
+                showView('semester');
+            } else {
+                showView('year');
+            }
         });
     });
 
     function populateSemesterButtons(year) {
         semesterButtonsContainer.innerHTML = '';
-        const semesters = Object.keys(syllabusData[year]);
-        semesters.forEach(semester => {
+        const yearData = syllabusData[year];
+        document.getElementById('semester-title').textContent = `Select Semester - ${year}st Year`;
+        
+        yearData.semesters.forEach(sem => {
             const semBtn = document.createElement('button');
-            const semesterNumber = (year - 1) * 2 + parseInt(semester) - ((year > 1) ? 2 : 0);
-             if (year == 1 && semester == 1) semBtn.textContent = 'Semester 1';
-            else if (year == 1 && semester == 2) semBtn.textContent = 'Semester 2';
-            else if (year == 2 && semester == 3) semBtn.textContent = 'Semester 3';
-            else if (year == 2 && semester == 4) semBtn.textContent = 'Semester 4';
-            else if (year == 3 && semester == 5) semBtn.textContent = 'Semester 5';
-            else if (year == 3 && semester == 6) semBtn.textContent = 'Semester 6';
-            else if (year == 4 && semester == 7) semBtn.textContent = 'Semester 7';
-            else if (year == 4 && semester == 8) semBtn.textContent = 'Semester 8';
-
-
-            semBtn.classList.add('semester-btn');
+            semBtn.textContent = `Semester ${sem}`;
+            semBtn.classList.add('semester-btn', 'animated-button');
+            semBtn.dataset.semester = sem;
             semBtn.addEventListener('click', () => {
-                populateSubjectList(year, semester);
-                subjectList.style.display = 'block';
+                populateSubjectList(year, sem);
+                showView('subject');
             });
             semesterButtonsContainer.appendChild(semBtn);
         });
@@ -209,7 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function populateSubjectList(year, semester) {
         subjectsUl.innerHTML = '';
-        const subjects = syllabusData[year][semester];
+        const subjects = syllabusData[year].subjects[semester];
+        document.getElementById('subject-title').textContent = `Semester ${semester} - Subjects & Labs`;
+
+        if (!subjects || subjects.length === 0) {
+            subjectsUl.innerHTML = '<li>No subjects listed for this semester.</li>';
+            return;
+        }
+
         subjects.forEach(subject => {
             const li = document.createElement('li');
             li.innerHTML = `<strong>${subject.code}</strong>: ${subject.name} <i>(${subject.type})</i>`;
@@ -221,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displaySyllabus(code, name) {
-        const details = syllabusDetails[code] || 'Syllabus details for this elective can be found in the PDF.';
+        const details = syllabusDetails[code] || 'Syllabus details for this elective can be found in the main PDF document.';
         syllabusContent.innerHTML = `<h3>${name} (${code})</h3><div>${details}</div>`;
         modal.style.display = 'block';
     }
@@ -235,4 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.style.display = 'none';
         }
     });
+
+    // Initialize with the first view
+    showView('year');
 });
