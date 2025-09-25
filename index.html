@@ -4,29 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B.E. Biomedical Engineering Syllabus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark-theme">
     <div class="container">
-        <div class="header">
+        <header class="header">
             <h1>B.E. Biomedical Engineering Syllabus</h1>
-            <button id="theme-toggle">Toggle Theme</button>
-        </div>
-        <div id="year-selection" class="selection-box">
-            <h2>Select Year</h2>
-            <button class="year-btn" data-year="1">1st Year</button>
-            <button class="year-btn" data-year="2">2nd Year</button>
-            <button class="year-btn" data-year="3">3rd Year</button>
-            <button class="year-btn" data-year="4">4th Year</button>
-        </div>
-        <div id="semester-selection" class="selection-box" style="display: none;">
-            <h2>Select Semester</h2>
-            <div id="semester-buttons"></div>
-        </div>
-        <div id="subject-list" class="selection-box" style="display: none;">
-            <h2>Subjects and Laboratories</h2>
-            <ul id="subjects"></ul>
-        </div>
+           <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+            </button>
+        </header>
+
+        <main id="main-content">
+            <div id="year-selection" class="selection-box view active">
+                <h2>Select Year</h2>
+                <div class="button-grid">
+                    <button class="year-btn animated-button" data-year="1">1st Year</button>
+                    <button class="year-btn animated-button" data-year="2">2nd Year</button>
+                    <button class="year-btn animated-button" data-year="3">3rd Year</button>
+                    <button class="year-btn animated-button" data-year="4">4th Year</button>
+                </div>
+            </div>
+
+            <div id="semester-selection" class="selection-box view" style="display: none;">
+                <h2 id="semester-title">Select Semester</h2>
+                <div id="semester-buttons" class="button-grid"></div>
+                <button class="back-btn animated-button" data-target="year-selection">Back to Years</button>
+            </div>
+
+            <div id="subject-list" class="selection-box view" style="display: none;">
+                <h2 id="subject-title">Subjects & Labs</h2>
+                <ul id="subjects"></ul>
+                <button class="back-btn animated-button" data-target="semester-selection">Back to Semesters</button>
+            </div>
+        </main>
     </div>
 
     <div id="syllabus-modal" class="modal">
@@ -38,4 +49,9 @@
 
     <script src="script.js"></script>
 </body>
+<footer>
+    <p style="text-align: center;">&copy; 2024 B.E. Biomedical Engineering Syllabus. All rights reserved.</p>
+    <p.style="text-align: center;">Developed by Vedhavalli & Manoj</p>
+</footer>
+
 </html>
